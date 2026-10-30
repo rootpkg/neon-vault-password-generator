@@ -1,4 +1,6 @@
 
+import zxcvbn from 'zxcvbn'
+
 const UPPERCASE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const LOWERCASE = 'abcdefghijklmnopqrstuvwxyz'
 const NUMBERS = '0123456789'
@@ -19,44 +21,51 @@ function secureRandomIndex(max) {
   return value % max
 }
 
-export function generatePassword(length, options) {
+export function generatePassword(length, options = {}) {
+  const settings = {
+    uppercase: options.uppercase ?? true,
+    lowercase: options.lowercase ?? true,
+    numbers: options.numbers ?? true,
+    symbols: options.symbols ?? true,
+  }
+
   let pool = ''
   const requiredCharacters = []
 
-  if (options.uppercase) {
+  if (settings.uppercase) {
     pool += UPPERCASE
     requiredCharacters.push(
       UPPERCASE[secureRandomIndex(UPPERCASE.length)]
     )
   }
 
-  if (options.lowercase) {
+  if (settings.lowercase) {
     pool += LOWERCASE
     requiredCharacters.push(
       LOWERCASE[secureRandomIndex(LOWERCASE.length)]
     )
   }
 
-  if (options.numbers) {
+  if (settings.numbers) {
     pool += NUMBERS
     requiredCharacters.push(
       NUMBERS[secureRandomIndex(NUMBERS.length)]
     )
   }
 
-  if (options.symbols) {
+  if (settings.symbols) {
     pool += SYMBOLS
     requiredCharacters.push(
       SYMBOLS[secureRandomIndex(SYMBOLS.length)]
     )
   }
 
-  if (pool.length === 0) {
+  if (!pool) {
     throw new Error('Select at least one character type.')
   }
 
-  if (length < requiredCharacters.length) {
-    throw new Error('Password length is too short.')
+  if (!Number.isInteger(length) || length < requiredCharacters.length || length > 64) {
+    throw new Error('Choose a valid password length.')
   }
 
   const characters = [...requiredCharacters]
@@ -67,6 +76,7 @@ export function generatePassword(length, options) {
 
   for (let i = characters.length - 1; i > 0; i--) {
     const j = secureRandomIndex(i + 1)
+
     ;[characters[i], characters[j]] = [
       characters[j],
       characters[i],
@@ -76,44 +86,22 @@ export function generatePassword(length, options) {
   return characters.join('')
 }
 
-// Estimate strength using length and selected character pool.
-export function getPasswordStrength(password, options) {
-  let poolSize = 0
+export function getPasswordStrength(password) {
+  const result = zxcvbn(password)
 
-  if (options.uppercase) poolSize += UPPERCASE.length
-  if (options.lowercase) poolSize += LOWERCASE.length
-  if (options.numbers) poolSize += NUMBERS.length
-  if (options.symbols) poolSize += SYMBOLS.length
+  const labels = [
+    'Weak',
+    'Weak',
+    'Fair',
+    'Strong',
+    'Very Strong',
+  ]
 
-  const entropy = password.length * Math.log2(poolSize)
-
-  if (entropy < 40) {
-    return { label: 'Weak', entropy }
+  return {
+    score: result.score,
+    label: labels[result.score],
+    guesses: result.guesses,
+    crackTimesDisplay: result.crack_times_display,
+    feedback: result.feedback,
   }
-
-  if (entropy < 60) {
-    return { label: 'Fair', entropy }
-  }
-
-  if (entropy < 80) {
-    return { label: 'Strong', entropy }
-  }
-
-  return { label: 'Very Strong', entropy }
-}
-
-// Educational estimate, assuming 1 billion guesses per second.
-export function getCrackTime(entropy) {
-  const seconds = Math.pow(2, entropy) / (2 * 1_000_000_000)
-
-  if (seconds < 1) return 'Less than a second'
-  if (seconds < 60) return `${Math.round(seconds)} seconds`
-  if (seconds < 3600) return `${Math.round(seconds / 60)} minutes`
-  if (seconds < 86400) return `${Math.round(seconds / 3600)} hours`
-  if (seconds < 31536000) return `${Math.round(seconds / 86400)} days`
-  if (seconds < 31536000 * 1000) {
-    return `${Math.round(seconds / 31536000)} years`
-  }
-
-  return 'Over 1,000 years'
 }

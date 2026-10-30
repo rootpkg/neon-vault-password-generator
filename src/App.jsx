@@ -3,8 +3,30 @@ import { useState } from 'react'
 import {
   generatePassword,
   getPasswordStrength,
-  getCrackTime,
 } from './password.js'
+
+const attackScenarios = [
+  {
+    key: 'online_throttling_100_per_hour',
+    label: 'Online attack with rate limiting',
+    description: '100 guesses per hour',
+  },
+  {
+    key: 'online_no_throttling_10_per_second',
+    label: 'Online attack without rate limiting',
+    description: '10 guesses per second',
+  },
+  {
+    key: 'offline_slow_hashing_1e4_per_second',
+    label: 'Offline attack with slow hashing',
+    description: '10,000 guesses per second',
+  },
+  {
+    key: 'offline_fast_hashing_1e10_per_second',
+    label: 'Offline attack with fast hashing',
+    description: '10 billion guesses per second',
+  },
+]
 
 function App() {
   const [length, setLength] = useState(16)
@@ -12,26 +34,40 @@ function App() {
   const [lowercase, setLowercase] = useState(true)
   const [numbers, setNumbers] = useState(true)
   const [symbols, setSymbols] = useState(true)
+
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [copied, setCopied] = useState(false)
   const [strength, setStrength] = useState(null)
 
-  const options = { uppercase, lowercase, numbers, symbols }
+  const options = {
+    uppercase,
+    lowercase,
+    numbers,
+    symbols,
+  }
 
   function handleGenerate() {
     try {
       const newPassword = generatePassword(length, options)
-      const result = getPasswordStrength(newPassword, options)
 
+      // Show the generated password independently of strength analysis.
       setPassword(newPassword)
-      setStrength(result)
-      setError('')
       setCopied(false)
+      setError('')
+
+      try {
+        const result = getPasswordStrength(newPassword)
+        setStrength(result)
+      } catch (analysisError) {
+        console.error('Strength analysis failed:', analysisError)
+        setStrength(null)
+        setError('Password generated, but strength analysis failed.')
+      }
     } catch (err) {
       setPassword('')
       setStrength(null)
-      setError(err.message)
+      setError(err.message || 'Unable to generate password.')
       setCopied(false)
     }
   }
@@ -56,12 +92,14 @@ function App() {
 
       <section className="password-box">
         <label htmlFor="password">Your Password</label>
+
         <input
           id="password"
           type="text"
           value={password}
           placeholder="Your password will appear here"
           readOnly
+          autoComplete="off"
         />
       </section>
 
@@ -73,29 +111,56 @@ function App() {
         >
           <h2>Strength: {strength.label}</h2>
 
-          <div className="strength-track">
+          <div
+            className="strength-track"
+            role="progressbar"
+            aria-label="Password strength"
+            aria-valuemin="0"
+            aria-valuemax="4"
+            aria-valuenow={strength.score}
+          >
             <div
               className="strength-fill"
               style={{
-                width: `${Math.min(
-                  100,
-                  (strength.entropy / 100) * 100
-                )}%`,
+                width: `${(strength.score / 4) * 100}%`,
               }}
             />
           </div>
 
-          <p>
-            Estimated entropy: {Math.round(strength.entropy)} bits
-          </p>
+          <p>Strength score: {strength.score} / 4</p>
 
-          <p>
-            Estimated crack time: {getCrackTime(strength.entropy)}
-          </p>
+          <h3>Estimated Crack Times</h3>
+
+          {attackScenarios.map((scenario) => (
+            <div className="crack-time" key={scenario.key}>
+              <strong>{scenario.label}</strong>
+              <p>
+                {strength.crackTimesDisplay?.[scenario.key] ?? 'Unavailable'}
+              </p>
+              <small>{scenario.description}</small>
+            </div>
+          ))}
+
+          {strength.feedback.warning && (
+            <p>
+              <strong>Warning:</strong> {strength.feedback.warning}
+            </p>
+          )}
+
+          {strength.feedback.suggestions.length > 0 && (
+            <div>
+              <strong>Suggestions</strong>
+              <ul>
+                {strength.feedback.suggestions.map((suggestion, index) => (
+                  <li key={index}>{suggestion}</li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           <small>
-            Educational estimate assuming 1 billion guesses per second.
-            Actual results vary depending on the attack and security system.
+            Estimates use zxcvbn attack models. Actual results depend on
+            hardware, hashing methods and security controls.
           </small>
         </section>
       )}

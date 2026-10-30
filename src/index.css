@@ -263,3 +263,30 @@ input:focus-visible {
     transition-duration: 0.01ms !important;
   }
 }
+
+
+.crack-time {
+  padding: 12px;
+  margin: 12px 0;
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  border-radius: 10px;
+  background: rgba(0, 255, 255, 0.04);
+}
+
+.crack-time strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.crack-time p {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.crack-time small {
+  opacity: 0.7;
+}
+
+.strength-box h3 {
+  margin-top: 20px;
+}
