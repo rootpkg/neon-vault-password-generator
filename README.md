@@ -1,16 +1,83 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# NEON VAULT — Secure Password Generator
 
-Currently, two official plugins are available:
+NEON VAULT is a browser-based password generator built with React, JavaScript, and Vite. It creates random passwords using the Web Crypto API.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
 
-## React Compiler
+- Generate passwords from 8 to 64 characters.
+- Choose uppercase letters, lowercase letters, numbers, and symbols.
+- Secure random number generation using `crypto.getRandomValues()`.
+- Ensures every selected character category is represented.
+- Copy generated passwords to the clipboard.
+- View estimated password strength and entropy.
+- Educational crack-time estimate.
+- Responsive cyberpunk-inspired interface.
+- No account, backend, database, or external API required.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Technology
 
-## Expanding the ESLint configuration
+- React
+- JavaScript
+- Vite
+- CSS
+- Web Crypto API
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Run Locally
+
+Requirements: Node.js and npm.
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start development server:
+
+```bash
+npm run dev
+```
+
+Create production build:
+
+```bash
+npm run build
+```
+
+Run code checks:
+
+```bash
+npm run lint
+```
+
+## Security Notes
+
+NEON VAULT uses the browser's cryptographically secure random number generator.
+
+The password strength and crack-time values are educational estimates, not security guarantees. Actual password security depends on the generation process, storage, hashing, attack conditions, and the systems where passwords are used.
+
+Passwords are generated locally in the browser. The application does not send generated passwords to a server.
+
+## Project Structure
+
+```text
+neon-vault-password-generator/
+├── public/
+│   └── favicon.svg
+├── src/
+│   ├── App.jsx
+│   ├── index.css
+│   ├── main.jsx
+│   └── password.js
+├── index.html
+├── package.json
+├── package-lock.json
+├── vite.config.js
+├── eslint.config.js
+└── README.md
+```
+
+## License
+
+Choose and add a license before distributing this project as open-source software.
