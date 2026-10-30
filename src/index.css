@@ -1,0 +1,265 @@
+
+:root {
+  font-family: Arial, sans-serif;
+  color: #f4f7ff;
+  background: #070816;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 15% 20%, #44208055, transparent 40%),
+    radial-gradient(ellipse at 85% 80%, #005b9955, transparent 40%),
+    #070816;
+}
+
+main {
+  width: min(92%, 680px);
+  margin: 55px auto;
+  padding: 38px;
+  text-align: center;
+  background: linear-gradient(145deg, #15172d, #0d1021);
+  border: 1px solid #5550a8;
+  border-radius: 22px;
+  box-shadow: 0 0 35px #713cff33, inset 0 0 25px #263d8033;
+  animation: appear 0.7s ease;
+}
+
+h1 {
+  margin-bottom: 8px;
+  color: #65eaff;
+  font-size: clamp(2.3rem, 7vw, 3.7rem);
+  letter-spacing: 5px;
+  text-shadow: 0 0 12px #00d9ff, 0 0 30px #008cff88;
+}
+
+h2 {
+  color: #c9a3ff;
+}
+
+p {
+  color: #b9c5e8;
+  line-height: 1.6;
+}
+
+p:first-of-type {
+  color: #c69aff;
+  font-size: 1.1rem;
+}
+
+section {
+  margin: 25px 0;
+  padding: 20px;
+  background: #171c35aa;
+  border: 1px solid #303d70;
+  border-radius: 14px;
+  text-align: left;
+}
+
+label {
+  display: block;
+  margin-bottom: 12px;
+  color: #dce5ff;
+}
+
+.password-box input {
+  width: 100%;
+  padding: 15px;
+  color: #66f4ff;
+  background: #080d20;
+  border: 1px solid #26c8ef;
+  border-radius: 9px;
+  font-size: 1rem;
+  box-shadow: 0 0 15px #00d9ff22;
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: #a56bff;
+  cursor: pointer;
+}
+
+input[type="checkbox"] {
+  margin-right: 10px;
+  accent-color: #b36aff;
+}
+
+.character-options label {
+  margin: 15px 0;
+}
+
+button {
+  margin: 8px;
+  padding: 14px 22px;
+  color: #080b18;
+  background: linear-gradient(100deg, #53eaff, #b78aff);
+  border: none;
+  border-radius: 9px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 0 22px #67dfff99;
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.strength-box {
+  border-color: #8b63d9;
+  box-shadow: 0 0 18px #925cff22;
+}
+
+.strength-box small {
+  color: #9ba9cc;
+  line-height: 1.5;
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 600px) {
+  main {
+    margin: 20px auto;
+    padding: 24px 16px;
+  }
+
+  section {
+    padding: 16px;
+  }
+
+  button {
+    width: 100%;
+    margin: 7px 0;
+  }
+}
+
+
+.strength-track {
+  width: 100%;
+  height: 12px;
+  margin: 15px 0;
+  overflow: hidden;
+  background: #080d20;
+  border: 1px solid #39466e;
+  border-radius: 20px;
+}
+
+.strength-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #ff477e, #ffc857, #42f5c5);
+  box-shadow: 0 0 12px #42f5c5aa;
+  transition: width 0.4s ease;
+}
+
+
+/* Final UI polish */
+
+main {
+  position: relative;
+  overflow: hidden;
+}
+
+main::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 15%;
+  width: 70%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #55e7ff, #bd8cff, transparent);
+  box-shadow: 0 0 15px #55e7ff;
+}
+
+.password-box input {
+  font-family: Consolas, monospace;
+  letter-spacing: 1px;
+  outline: none;
+}
+
+.password-box input:focus {
+  border-color: #bd8cff;
+  box-shadow: 0 0 18px #bd8cff66;
+}
+
+section {
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+section:hover {
+  border-color: #6269b5;
+}
+
+.character-options label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.character-options input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  cursor: pointer;
+}
+
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid #65eaff;
+  outline-offset: 4px;
+}
+
+.strength-box h2 {
+  text-shadow: 0 0 12px #bd8cff66;
+}
+
+.strength-box small {
+  display: block;
+  margin-top: 12px;
+}
+
+@media (max-width: 400px) {
+  h1 {
+    letter-spacing: 2px;
+  }
+
+  main {
+    padding: 20px 12px;
+  }
+
+  .password-box input {
+    font-size: 0.85rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
